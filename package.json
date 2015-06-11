@@ -15,12 +15,13 @@
     "express-handlebars":"*",
     "mongodb":"*",
     "mongoose":"*",
+    "morgan": "~1.0.0",
     "passport":"*",
     "passport-http":"*",
     "passport-local":"*",
     "express-session":"*",
     "express-validator":"*",
-    "express-flash":"*",
+    "connect-flash":"*",
     "express-messages":"*"
   }
 }
