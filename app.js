@@ -15,16 +15,7 @@ var session = require("express-session");
 var passport = require("passport");
 var LocalStrategy = require('passport-local').Strategy;
 
-var env = process.env.NODE_ENV || 'development';
-if (env === 'development') {
-    // dev specific settings
-    app.use(session({secret:config.sessionSecret}))
-}else{
-    // prod specific settings
-    app.use(session({secret:'catscanfly'}))
-}
-
-// view engine setup
+// view engine setup, htlm handling and static scripts
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'jade');
 app.engine('handlebars', exphbs({defaultLayout: 'layout'}));
@@ -36,6 +27,48 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 // will find all my static scripts (eg styles) in public folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+var env = process.env.NODE_ENV || 'development';
+if (env === 'development') {
+    // dev specific settings
+    app.use(session({secret:config.sessionSecret,
+                    saveUninitialized: true,
+                    resave:true}))
+}else{
+    // prod specific settings
+    app.use(session({secret:'catscanfly',
+                    saveUninitialized: true,
+                    resave:true
+                    }))
+}
+
+// Passport
+// E: ...(and then this goes SECOND !)
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Express Validator
+app.use(expressValidator({
+    errorFormatter: function(param, msg, value) {
+        var namespace = param.split('.')
+        , root    = namespace.shift()
+        , formParam = root;
+
+    while(namespace.length) {
+        formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+        param : formParam,
+        msg   : msg,
+        value : value
+    };
+  }
+}));
+
+// Connect-Flash
+app.use(flash());
+
 
 
 var routes = require('./routes/index.js')(express, app);
