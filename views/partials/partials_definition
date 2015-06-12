@@ -1,0 +1,4 @@
+A partial is a html that it is called only if a condition is matchted.
+
+For example:
+In the case of login and classes, there is an indication that they could be included in the layout as long as a condition (user type, registration) is met

@@ -1,0 +1,79 @@
+var mongoose = require('mongoose');
+// already in app: following not required here?
+//mongoose.connect('mongodb://localhost/elearn');
+//var db = mongoose.connection;
+
+// E: setting the signup method in user model
+var bcrypt = require('bcryptjs');
+
+// User Schema
+var UserSchema = mongoose.Schema({
+	name: {
+		type: String
+	},
+	username: {
+		type: String
+	},
+	email:{
+		type: String
+	},
+	password: {
+		type:String,
+		bcrypt:true
+	},
+	registration_date: {
+		type:Date	
+	}
+});
+
+// Training: Instantiation of User as a mongoose instance
+var User = module.exports = mongoose.model('User', UserSchema);
+
+
+// fetch Single User
+module.exports.getUserById = function(id, callback){
+	User.findById(id,callback);
+}
+
+// fetch Single User
+module.exports.getUserByUsername = function(username, callback){
+	var query = {username: username};
+	User.findOne(query,callback);
+}
+
+//E: Student and Instructor require different forms because they go to different collections
+// E: Student saving
+module.exports.saveStudent = function(newUser, newStudent, callback) {
+	bcrypt.hash(newUser.password, 10, function(err, hash){
+		//if(err) throw err;
+		if(err) throw err;
+		// Set hashed pw
+		newUser.password = hash;
+		console.log('Student being saved');
+		// Create User
+		async.parallel([newUser.save, newStudent.save], callback);
+	});
+}
+// **
+
+// E: Instructor saving
+// Training: creating user "method"
+module.exports.saveInstructor = function(newUser, newInstructor, callback) {
+	bcrypt.hash(newUser.password, 10, function(err, hash){
+		if(err) throw err;
+		// Set hashed pw
+		newUser.password = hash;
+		console.log('Instructor being saved');
+		// Create User
+		async.parallel([newUser.save, newInstructor.save], callback);
+	});
+}
+// **
+
+// Training: login user "method" with passport
+module.exports.comparePassword = function(candidatePassword, hash, callback){
+	bcrypt.compare(candidatePassword, hash, function(err, isMatch){
+		if(err) throw err;
+		callback(null, isMatch);
+	});
+}

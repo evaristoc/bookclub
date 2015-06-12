@@ -23,5 +23,9 @@ mongoDB SCHEMAS:
 Development:
 db = bookclub
 collections = {users, books}
-users schema = {username, email, password, books (several {book_ids}), lent_to (several {user_id, date}), borrowed_from (several {user_id, date})}
-books schema = {owner_id; authors (several); title ; edition; description; remarks; tags}
+users schema = {name, username, email, password, books (several) {book_ids}}
+books schema = {owner_id, authors (several), title, edition, description??, remarks, tags, status => only one thing... {lent_to/borrowed_from, user_id??, date}}
+
+Some links to check:
+Registration:
+http://miamicoder.com/2014/using-mongodb-and-mongoose-for-user-registration-login-and-logout-in-a-mobile-application/
