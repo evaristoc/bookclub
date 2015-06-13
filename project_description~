@@ -28,13 +28,15 @@ books schema = {owner_id, authors (several), title, edition, description??, rema
 STRUCTURE:
 '/': login/registration page
 '/register/signup': signing up page
-'/home': a general view of the project
+'/home': a general view of the project??
 '/books': a list of all books (find ways to sort/filter the info?)
 '/books/book': information about a particular book for handling
-'/books/book/msm': a message page to ask for a book
+'/books/book/message': a message page to ask for a book
 '/user/profile': check for profile data and for changes
 '/user/books': all information about my books, either lent or borrowed
 '/user/books/new': a book to register
+
+
 
 Some links to check:
 Registration:

@@ -19,12 +19,9 @@
 
 <!-- Menu Horizontal --><!-- improve to include a partial for those logged in -->
 <ul class="menu">
-	{{#if isHome}}
-		<li class="current"><a href="/">Home</a></li>
-		<li><a href="/About">About</a></li>
-	{{else}}
-		{{>menuuser}}
-	{{/if}}
+	<li class="current"><a href="/">Home</a></li>
+	<li><a href="/About">About</a></li>
+	{{>usermenu}}
 </ul>
 
 <!-- ===================================== END HEADER ===================================== -->

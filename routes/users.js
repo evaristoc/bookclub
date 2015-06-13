@@ -23,7 +23,7 @@ module.exports = function(express, app){
             console.log(err);
             res.send(err);
           } else {
-            res.render('/home', {'users':user}); // the second parameter is session !!
+            res.render('/user', {'users':user}); // the second parameter is session and its name!!
           }
         });
       }
@@ -45,7 +45,9 @@ module.exports = function(express, app){
         req.flash('success', 'You have registered a new book');
         res.redirect('/user/books');
     })
-
-    app.use('/', users);
+    
+    // E: the second parameter is the Object !
+    // http://stackoverflow.com/questions/18296184/error-creating-user-in-express-routes-file
+    app.use('/user', User);
 
 }
