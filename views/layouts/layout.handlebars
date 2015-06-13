@@ -17,10 +17,14 @@
 <script type="text/javascript" src="/javascripts/kickstart.js"></script>                                  <!-- KICKSTART -->
 </head><body>
 
-<!-- Menu Horizontal -->
+<!-- Menu Horizontal --><!-- improve to include a partial for those logged in -->
 <ul class="menu">
-<li class="current"><a href="/">Home</a></li>
-<li><a href="/classes">Classes</a></li>
+	{{#if isHome}}
+		<li class="current"><a href="/">Home</a></li>
+		<li><a href="/About">About</a></li>
+	{{else}}
+		{{>menuuser}}
+	{{/if}}
 </ul>
 
 <!-- ===================================== END HEADER ===================================== -->

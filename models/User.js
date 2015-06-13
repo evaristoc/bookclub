@@ -27,7 +27,7 @@ var UserSchema = mongoose.Schema({
 });
 
 // Training: Instantiation of User as a mongoose instance
-var User = module.exports = mongoose.model('User', UserSchema);
+var User = module.exports = mongoose.model('users', UserSchema);
 
 
 // fetch Single User
@@ -43,31 +43,16 @@ module.exports.getUserByUsername = function(username, callback){
 
 //E: Student and Instructor require different forms because they go to different collections
 // E: Student saving
-module.exports.saveStudent = function(newUser, newStudent, callback) {
+module.exports.saveUser = function(newUser, callback) {
 	bcrypt.hash(newUser.password, 10, function(err, hash){
 		//if(err) throw err;
 		if(err) throw err;
 		// Set hashed pw
 		newUser.password = hash;
-		console.log('Student being saved');
-		// Create User
-		async.parallel([newUser.save, newStudent.save], callback);
+		console.log('User being saved');
 	});
 }
-// **
 
-// E: Instructor saving
-// Training: creating user "method"
-module.exports.saveInstructor = function(newUser, newInstructor, callback) {
-	bcrypt.hash(newUser.password, 10, function(err, hash){
-		if(err) throw err;
-		// Set hashed pw
-		newUser.password = hash;
-		console.log('Instructor being saved');
-		// Create User
-		async.parallel([newUser.save, newInstructor.save], callback);
-	});
-}
 // **
 
 // Training: login user "method" with passport

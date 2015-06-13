@@ -18,13 +18,23 @@ PLAN:
 --- base the whole thing in elearn project
 --- levels: many-to-many books view, many-to-1 books to personal user
 
-
 mongoDB SCHEMAS:
 Development:
 db = bookclub
 collections = {users, books}
 users schema = {name, username, email, password, books (several) {book_ids}}
-books schema = {owner_id, authors (several), title, edition, description, remarks, tags, status {lent_to/borrowed_from, user_id??, date}}
+books schema = {owner_id, authors (several), title, edition, description??, remarks, tags, status => only one thing... {lent_to/borrowed_from, user_id??, date}}
+
+STRUCTURE:
+'/': login/registration page
+'/register/signup': signing up page
+'/home': a general view of the project
+'/books': a list of all books (find ways to sort/filter the info?)
+'/books/book': information about a particular book for handling
+'/books/book/msm': a message page to ask for a book
+'/user/profile': check for profile data and for changes
+'/user/books': all information about my books, either lent or borrowed
+'/user/books/new': a book to register
 
 Some links to check:
 Registration:

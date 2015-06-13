@@ -1,0 +1,3 @@
+module.exports = function(passport, LocalStrategy, config, mongoose){
+    // nothing here for a Local Strategy...
+}

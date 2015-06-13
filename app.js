@@ -24,7 +24,7 @@ app.set('view engine', 'handlebars');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(cookieParser());
+app.use(cookieParser()); // will assign a cookie to each session...
 // will find all my static scripts (eg styles) in public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -41,10 +41,15 @@ if (env === 'development') {
                     saveUninitialized: true,
                     resave:true
                     }))
+// see ALL the Sahim training later to find specific settings for development using a config!
+// It is a bit scaterred but really good!
 }
 
 // Passport
 // E: ...(and then this goes SECOND !)
+
+//require('./auth/passportAuth.js')(passport, LocalStrategy, config, mongoose);  
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -71,7 +76,9 @@ app.use(flash());
 
 
 
-var routes = require('./routes/index.js')(express, app);
+require('./routes/index.js')(express, app);
+require('./routes/users.js')(express, app);
+require('./routes/books.js')(express, app);
 //var users = require('./routes/users');
 //app.use('/', routes);
 //app.use('/users', users);
