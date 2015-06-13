@@ -20,7 +20,7 @@
 <!-- Menu Horizontal --><!-- improve to include a partial for those logged in -->
 <ul class="menu">
 	<li class="current"><a href="/">Home</a></li>
-	<li><a href="/About">About</a></li>
+	<li><a href="/about">About</a></li>
 	{{>usermenu}}
 </ul>
 
@@ -33,19 +33,21 @@
 		{{#if errors}}
 			{{#each errors}}
 				<div class="notice error"><i class="icon-remove-sign icon-large"></i> {{msg}}
-				<a href="#close" class="icon-remove"></a></div>
+					<a href="#close" class="icon-remove"></a>
+				</div>
 			{{/each}}
 		{{/if}}
 		{{{body}}}
 		</div>
-		
+		{{#if isHome}}
+
 		<div class="col_3"><!-- partial -->
-		{{>login}}
+			{{>login}}
 		</div>
 		
+
 		<hr />
 		<!-- NEW BLOCK BELOW... --><!-- partial -->
-		{{#if isHome}}
 			{{>classes}}
 		{{/if}}
 	</div>

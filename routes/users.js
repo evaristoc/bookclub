@@ -23,7 +23,7 @@ module.exports = function(express, app){
             console.log(err);
             res.send(err);
           } else {
-            res.render('/user', {'users':user}); // the second parameter is session and its name!!
+            res.render('/user', {'users':User}); // the second parameter is session and its name!!
           }
         });
       }

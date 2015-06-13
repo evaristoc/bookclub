@@ -1,11 +1,5 @@
 <!-- below is the user global variable as defined in app !! -->
-{{#if user}}
-<h5>Welcome, {{user.username}}</h5>
-<ul class="alt">
-    <li><a href="/{{type}}s/classes">My Classes</a></li>
-    <li><a href="/users/logout">Logout</a></li>
-</ul>
-{{else}}
+{{#if isHome}}
 <h4>Login</h4>
     <form method = "post" action = "/users/login">
 	<label>Username: </label>
@@ -14,4 +8,11 @@
 	<input type="password" name = "password" />
 	<input type="submit" class = "button" value="login" />
     </form>
+{{else}}
+<h5>Welcome, {{user.username}}</h5>
+<ul class="alt">
+    <li><a href="/{{type}}s/classes">My Classes</a></li>
+    <li><a href="/users/logout">Logout</a></li>
+</ul>
+
 {{/if}}
