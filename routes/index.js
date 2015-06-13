@@ -19,7 +19,6 @@ module.exports = function(express, app) {
     res.render('about', { title: 'About BookClub' });
   });
 
-
   
   app.use('/', router);
 

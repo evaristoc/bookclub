@@ -77,7 +77,7 @@ app.use(flash());
 
 
 require('./routes/index.js')(express, app);
-require('./routes/users.js')(express, app);
+require('./routes/users.js')(express, app, passport, LocalStrategy);
 require('./routes/books.js')(express, app);
 //var users = require('./routes/users');
 //app.use('/', routes);
