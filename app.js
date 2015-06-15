@@ -11,14 +11,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var config = require("./config/config.js");
-var mongoose = require('mongoose');
 var exphbs = require("express-handlebars");
 var expressValidator = require("express-validator");
 var flash = require("connect-flash");
 var session = require("express-session");
 var passport = require("passport");
 var LocalStrategy = require('passport-local').Strategy;
-
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/bookclub');
 
 
 

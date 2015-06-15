@@ -1,6 +1,6 @@
 module.exports = function(express, app, passport, LocalStrategy, mongoose){
     var router = express.Router();
-    var User = require('../models/User')(mongoose);
+    var User = require('../models/User.js');
 
     /* GET users listing. */
     // Anyone is a user BEFORE and even AFTER signing
@@ -15,10 +15,9 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
       res.render('user/signup', { title: 'About BookClub' });
     });
 
-    router.post('/newsignup', function(req, res, next){
+    router.post('/user/signup', function(req, res, next){
         // Get Form Values
-        var first_name     	= req.body.first_name;
-        var last_name     	= req.body.last_name;
+        var name         	= req.body.name;
         var email    		= req.body.email;
         var username 		= req.body.username;
         var password 		= req.body.password;
@@ -26,8 +25,7 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
     
         // Form Field Validation
             // E: only for empty field...
-        req.checkBody('first_name', 'First name field is required').notEmpty();
-        req.checkBody('last_name', 'Last name field is required').notEmpty();
+        req.checkBody('name', 'Last name field is required').notEmpty();
         req.checkBody('email', 'Email field is required').notEmpty();
         req.checkBody('email', 'Email must be a valid email address').isEmail();
         req.checkBody('username', 'Username field is required').notEmpty();
@@ -40,8 +38,7 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
         if(errors){
             res.render('user/signup', {
                 errors: errors,
-                first_name: first_name,
-                last_name: last_name,
+                name: last_name,
                 email: email,
                 username: username,
                 password: password,
@@ -52,15 +49,18 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
             // E: if the user is a instructor, create Instructor
         } else {
             var newUser = new User({
-                first_name: first_name,
-                last_name: last_name,
+                name: last_name,
                 email: email,
                 username:username,
                 password:password
             });
+            console.log(typeof newUser);
+            console.log(typeof User);
             // E: checking the type of application: student or instructor
-            User.saveUser(newUser, function(err, user){
+            User.createUser(newUser, function(err, user){
                 // E: final message into the web server and redirecting to homepage
+                if (err) throw err;
+                console.log(user);
                 req.flash('success','user added');
                 res.redirect('/');
             });

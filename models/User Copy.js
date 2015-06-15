@@ -1,8 +1,8 @@
-//function User(mongoose){
+//module.exports = function User(mongoose){
 	
 	// already in app: following not required here?
 	var mongoose = require('mongoose');
-	//mongoose.connect('mongodb://localhost/bookclub');
+	mongoose.connect('mongodb://localhost/bookclub');
 	//var db = mongoose.connection;
 	// E: setting the signup method in user model
 	// User Schema
@@ -30,15 +30,13 @@
 	var bcrypt = require('bcryptjs');
 	
 	// method create (save): incomplete - it will be finished in the users.js
-	module.exports.createUser = function(newUser, callback) {
-		console.log('inside first level saveUser');
+	this.saveUser = function(newUser, callback) {
 		bcrypt.hash(newUser.password, 10, function(err, hash){
 			//if(err) throw err;
 			if(err) throw err;
 			// Set hashed pw
 			newUser.password = hash;
 			console.log('User being saved');
-			newUser.save(callback);
 		});
 	}
 	
@@ -70,5 +68,3 @@
 	//	});
 	//}
 //}
-//
-//module.exports = new User;
