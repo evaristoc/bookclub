@@ -1,6 +1,6 @@
-module.exports = function(express, app, passport, LocalStrategy){
+module.exports = function(express, app, passport, LocalStrategy, mongoose){
     var router = express.Router();
-    //var User = require('../models/User');
+    var User = require('../models/User')(mongoose);
 
     /* GET users listing. */
     // Anyone is a user BEFORE and even AFTER signing
@@ -11,9 +11,60 @@ module.exports = function(express, app, passport, LocalStrategy){
     //  res.render('newsignup', { title: 'Signup Form' });
     //});
     
-    router.get('/signup', function(err, req, res, next) {
-      if (err) throw err;
-      res.render('about');
+    router.get('/user/signup', function(req, res, next) {
+      res.render('user/signup', { title: 'About BookClub' });
+    });
+
+    router.post('/newsignup', function(req, res, next){
+        // Get Form Values
+        var first_name     	= req.body.first_name;
+        var last_name     	= req.body.last_name;
+        var email    		= req.body.email;
+        var username 		= req.body.username;
+        var password 		= req.body.password;
+        var password2 		= req.body.password2;
+    
+        // Form Field Validation
+            // E: only for empty field...
+        req.checkBody('first_name', 'First name field is required').notEmpty();
+        req.checkBody('last_name', 'Last name field is required').notEmpty();
+        req.checkBody('email', 'Email field is required').notEmpty();
+        req.checkBody('email', 'Email must be a valid email address').isEmail();
+        req.checkBody('username', 'Username field is required').notEmpty();
+        req.checkBody('password', 'Password field is required').notEmpty();
+        req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
+    
+        var errors = req.validationErrors();
+    
+            //E: if error, re-render all in signup page, even the error...
+        if(errors){
+            res.render('user/signup', {
+                errors: errors,
+                first_name: first_name,
+                last_name: last_name,
+                email: email,
+                username: username,
+                password: password,
+                password2: password2
+            });
+            // E: if no error, create a new User
+            // E: if the user is a student, create Student
+            // E: if the user is a instructor, create Instructor
+        } else {
+            var newUser = new User({
+                first_name: first_name,
+                last_name: last_name,
+                email: email,
+                username:username,
+                password:password
+            });
+            // E: checking the type of application: student or instructor
+            User.saveUser(newUser, function(err, user){
+                // E: final message into the web server and redirecting to homepage
+                req.flash('success','user added');
+                res.redirect('/');
+            });
+        }
     });
     
     //function ensureAuthenticated(req,res,next) {

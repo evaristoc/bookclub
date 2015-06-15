@@ -1,19 +1,26 @@
 var express = require('express'),
     app = express();
 
+//var routes = require('./routes/index');
+//var users = require('./routes/users');
+//var books = require('./routes/books');
+
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var config = require("./config/config.js");
-var ConnectMongo = ("mongodb"); // no connection to external yet...
+var mongoose = require('mongoose');
 var exphbs = require("express-handlebars");
 var expressValidator = require("express-validator");
 var flash = require("connect-flash");
 var session = require("express-session");
 var passport = require("passport");
 var LocalStrategy = require('passport-local').Strategy;
+
+
+
 
 // view engine setup, htlm handling and static scripts
 app.set('views', path.join(__dirname, 'views'));
@@ -74,12 +81,14 @@ app.use(expressValidator({
 // Connect-Flash
 app.use(flash());
 
-
+//https://engineering.gosquared.com/node-js-error-handling-callbacks-vs-promises
+//http://webapplog.com/intro-to-express-js-parameters-error-handling-and-other-middleware/
+//https://www.joyent.com/developers/node/design/errors
+//http://stackoverflow.com/questions/13401354/need-better-node-js-http-get-request-error-handling
 
 require('./routes/index.js')(express, app);
-require('./routes/users.js')(express, app, passport, LocalStrategy);
-require('./routes/books.js')(express, app);
-//var users = require('./routes/users');
+require('./routes/users.js')(express, app, passport, LocalStrategy, mongoose);
+//var books = require('./routes/books');
 //app.use('/', routes);
 //app.use('/users', users);
 
