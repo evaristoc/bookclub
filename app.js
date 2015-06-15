@@ -81,11 +81,6 @@ app.use(expressValidator({
 // Connect-Flash
 app.use(flash());
 
-//https://engineering.gosquared.com/node-js-error-handling-callbacks-vs-promises
-//http://webapplog.com/intro-to-express-js-parameters-error-handling-and-other-middleware/
-//https://www.joyent.com/developers/node/design/errors
-//http://stackoverflow.com/questions/13401354/need-better-node-js-http-get-request-error-handling
-
 require('./routes/index.js')(express, app);
 require('./routes/users.js')(express, app, passport, LocalStrategy, mongoose);
 //var books = require('./routes/books');

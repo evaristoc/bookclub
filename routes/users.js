@@ -25,7 +25,7 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
     
         // Form Field Validation
             // E: only for empty field...
-        req.checkBody('name', 'Last name field is required').notEmpty();
+        req.checkBody('name', 'Name field is required').notEmpty();
         req.checkBody('email', 'Email field is required').notEmpty();
         req.checkBody('email', 'Email must be a valid email address').isEmail();
         req.checkBody('username', 'Username field is required').notEmpty();
@@ -38,7 +38,7 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
         if(errors){
             res.render('user/signup', {
                 errors: errors,
-                name: last_name,
+                name: name,
                 email: email,
                 username: username,
                 password: password,
@@ -49,7 +49,7 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
             // E: if the user is a instructor, create Instructor
         } else {
             var newUser = new User({
-                name: last_name,
+                name: name,
                 email: email,
                 username:username,
                 password:password
@@ -67,26 +67,93 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
         }
     });
     
-    //function ensureAuthenticated(req,res,next) {
-    //  if (req.isAuthenticated()) {
-    //    return next();
-    //  }
-    //  res.redirect('/')
-    //}
+    //// In the following, some preliminary steps are taken to start a session:
+    //// --- A temporary session cookie serialised by passport
+    //// --- AFTER INIT SERIALIZATION!!, the authentication of a login can be carried out
     //
-    //// USE THIS PART TO TAKE THE AUTHENTICATED USERS TO SEE A COMMON VIEW OF INFORMATION ABOUT THE SITE
-    //router.get('/', ensureAuthenticated, function(req, res, next) {
-    //    // here is where the new created method of object Student is initialised !!
-    //    User.getUserById(req.user.id, function(err,id){
-    //      if (err) {
-    //        console.log(err);
-    //        res.send(err);
-    //      } else {
-    //        res.render('/user', {'users':User}); // the second parameter is session and its name!!
-    //      }
-    //    });
-    //  }
-    //);
+
+    // Training: passport implementation
+    // SEE http://passportjs.org/docs/configure
+    // E: serialization is about creating a cookie assigned to a user to identify his/her session
+    passport.serializeUser(function(user, done) {
+      done(null, user._id);
+    });
+    
+    passport.deserializeUser(function(id, done) {
+      User.getUserById(id, function(err, user) {
+        done(err, user);
+      });
+    });
+
+    //
+    //
+    // Here the login:
+    // --- start from login partials,
+    // --- verify the correct authentication (which include decrypting at the Model file)
+    // --- after requesting (and sending...) some data for messaging and redirection...
+    // --- ... redirect the person into the corresponding section
+    
+
+    //router.get('/login', function(req, res, next) {
+    //  res.render('login',{
+    //    'title': 'Login'
+    //  });
+    //});
+ 
+    passport.use(new LocalStrategy(
+       function(username, password, done){
+               User.getUserByUsername(username, function(err, user){
+               if(err) throw err;
+               if(!user){
+                   console.log('Unknown User');
+                   return done(null, false,{message: 'Unknown User'});
+               }
+   
+               User.comparePassword(password, user.password, function(err, isMatch){
+                   if(err) throw err;
+                   if(isMatch){
+                       return done(null, user);
+                   } else {
+                       console.log('Invalid Password');
+                       return done(null, false, {message:'Invalid Password'});
+                   }
+               });
+           });
+       }
+   ));
+ 
+    // E: also from the other project, modified...
+    router.post('/login', passport.authenticate('local',{failureRedirect:'/', failureFlash:'Invalid username or password'}), function(req, res){
+        console.log('Authentication Successful');
+        var id = req.user.id;
+            req.flash('success', 'You are logged in');
+        res.redirect('/');
+    });
+
+    function ensureAuthenticated(req,res,next) {
+      if (req.isAuthenticated()) {
+        return next();
+      }
+      res.redirect('/')
+    }
+
+    // USE THIS PART TO TAKE THE AUTHENTICATED USERS TO SEE A SESSION VIEW OF INFORMATION ABOUT THE SITE
+    router.get('/', ensureAuthenticated, function(req, res, next) {
+        // here is where the new created method of object Student is initialised !!
+        User.getUserById(req.user.id, function(err,id){
+          if (err) {
+            console.log(err);
+            res.send(err);
+          } else {
+            res.render('/', {'users':user}); // the second parameter is session and its name!!
+          }
+        });
+      }
+    );
+
+
+
+
     //
     //// USE THIS PART TO REGISTER NEW BOOKS
     //router.post('user/books/new', function(req,res){

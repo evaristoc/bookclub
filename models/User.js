@@ -45,30 +45,30 @@
 	//
 	//
 	//
-	//// fetch Single User
-	//module.exports.getUserById = function(id, callback){
-	//	User.findById(id,callback);
-	//}
-	//
-	//// fetch Single User
-	//module.exports.getUserByUsername = function(username, callback){
-	//	var query = {username: username};
-	//	User.findOne(query,callback);
-	//}
-	//
-	////E: Student and Instructor require different forms because they go to different collections
-	//// E: Student saving
-	//
-	//
-	//// **
-	//
-	//// Training: login user "method" with passport
-	//module.exports.comparePassword = function(candidatePassword, hash, callback){
-	//	bcrypt.compare(candidatePassword, hash, function(err, isMatch){
-	//		if(err) throw err;
-	//		callback(null, isMatch);
-	//	});
-	//}
+	// fetch Single User
+	module.exports.getUserById = function(id, callback){
+		User.findById(id,callback);
+	}
+	
+	// fetch Single User
+	module.exports.getUserByUsername = function(username, callback){
+		var query = {username: username};
+		User.findOne(query,callback);
+	}
+	
+	//E: Student and Instructor require different forms because they go to different collections
+	// E: Student saving
+	
+	
+	// **
+	
+	// Training: login user "method" with passport
+	module.exports.comparePassword = function(candidatePassword, hash, callback){
+		bcrypt.compare(candidatePassword, hash, function(err, isMatch){
+			if(err) throw err;
+			callback(null, isMatch);
+		});
+	}
 //}
 //
 //module.exports = new User;
