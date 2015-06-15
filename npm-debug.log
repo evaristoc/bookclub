@@ -3,19 +3,19 @@
 2 info using npm@1.4.21
 3 info using node@v0.10.25
 4 verbose run-script [ 'prestart', 'start', 'poststart' ]
-5 info prestart freecodecamp-bookclub@0.0.1
-6 info start freecodecamp-bookclub@0.0.1
+5 info prestart FCCbookclub@0.0.1
+6 info start FCCbookclub@0.0.1
 7 verbose unsafe-perm in lifecycle true
-8 info freecodecamp-bookclub@0.0.1 Failed to exec start script
-9 error freecodecamp-bookclub@0.0.1 start: `nodejs ./bin/www`
+8 info FCCbookclub@0.0.1 Failed to exec start script
+9 error FCCbookclub@0.0.1 start: `nodejs ./bin/www`
 9 error Exit status 8
-10 error Failed at the freecodecamp-bookclub@0.0.1 start script.
-10 error This is most likely a problem with the freecodecamp-bookclub package,
+10 error Failed at the FCCbookclub@0.0.1 start script.
+10 error This is most likely a problem with the FCCbookclub package,
 10 error not with npm itself.
 10 error Tell the author that this fails on your system:
 10 error     nodejs ./bin/www
 10 error You can get their info via:
-10 error     npm owner ls freecodecamp-bookclub
+10 error     npm owner ls FCCbookclub
 10 error There is likely additional logging output above.
 11 error System Linux 3.16.0-38-generic
 12 error command "/usr/bin/nodejs" "/usr/bin/npm" "start"

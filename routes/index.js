@@ -15,8 +15,13 @@ module.exports = function(express, app) {
     res.render('index', { title: 'Welcome to BookClub !' });
   });
  
-   router.get('/about', function(req, res, next) {
+  router.get('/about', function(req, res, next) {
     res.render('about', { title: 'About BookClub' });
+  });
+   
+  router.get('/signup', function(err, req, res, next) {
+      if (err) throw err;
+      res.render('signup');
   });
 
   

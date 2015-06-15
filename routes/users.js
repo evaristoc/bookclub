@@ -1,53 +1,58 @@
 module.exports = function(express, app, passport, LocalStrategy){
     var router = express.Router();
-    var User = require('../models/User');
+    //var User = require('../models/User');
 
     /* GET users listing. */
     // Anyone is a user BEFORE and even AFTER signing
     // Someone requesting the signup from the index view file in the users folder will be showed the page
     // FIRST OF ALL: SIGNUP !!! Otherwise I cannot visit the user folder...
-    router.get('/newsignup', function(err, req, res, next) {
+    //router.get('/signup/newsignup', function(err, req, res, next) {
+    //  if (err) throw err;
+    //  res.render('newsignup', { title: 'Signup Form' });
+    //});
+    
+    router.get('/signup', function(err, req, res, next) {
       if (err) throw err;
-      res.render('/signup/signupnew');
+      res.render('about');
     });
     
-    function ensureAuthenticated(req,res,next) {
-      if (req.isAuthenticated()) {
-        return next();
-      }
-      res.redirect('/')
-    }
-    
-    // USE THIS PART TO TAKE THE AUTHENTICATED USERS TO SEE A COMMON VIEW OF INFORMATION ABOUT THE SITE
-    router.get('/', ensureAuthenticated, function(req, res, next) {
-        // here is where the new created method of object Student is initialised !!
-        User.getUserById(req.user.id, function(err,id){
-          if (err) {
-            console.log(err);
-            res.send(err);
-          } else {
-            res.render('/user', {'users':User}); // the second parameter is session and its name!!
-          }
-        });
-      }
-    );
-    
-    // USE THIS PART TO REGISTER NEW BOOKS
-    router.post('user/books/new', function(req,res){
-        // filled with the info passed through the form
-        info = [];
-        info['username'] = req.user.username;
-        //console.log(req.body.class_id);
-        info['class_id'] = req.body.class_id;
-        info['class_title'] = req.body.class_title;
-        
-        User.register(info, function(err, user){
-            if (err) throw err;
-            console.log(user);
-        });
-        req.flash('success', 'You have registered a new book');
-        res.redirect('/user/books');
-    })
+    //function ensureAuthenticated(req,res,next) {
+    //  if (req.isAuthenticated()) {
+    //    return next();
+    //  }
+    //  res.redirect('/')
+    //}
+    //
+    //// USE THIS PART TO TAKE THE AUTHENTICATED USERS TO SEE A COMMON VIEW OF INFORMATION ABOUT THE SITE
+    //router.get('/', ensureAuthenticated, function(req, res, next) {
+    //    // here is where the new created method of object Student is initialised !!
+    //    User.getUserById(req.user.id, function(err,id){
+    //      if (err) {
+    //        console.log(err);
+    //        res.send(err);
+    //      } else {
+    //        res.render('/user', {'users':User}); // the second parameter is session and its name!!
+    //      }
+    //    });
+    //  }
+    //);
+    //
+    //// USE THIS PART TO REGISTER NEW BOOKS
+    //router.post('user/books/new', function(req,res){
+    //    // filled with the info passed through the form
+    //    info = [];
+    //    info['username'] = req.user.username;
+    //    //console.log(req.body.class_id);
+    //    info['class_id'] = req.body.class_id;
+    //    info['class_title'] = req.body.class_title;
+    //    
+    //    User.register(info, function(err, user){
+    //        if (err) throw err;
+    //        console.log(user);
+    //    });
+    //    req.flash('success', 'You have registered a new book');
+    //    res.redirect('/user/books');
+    //})
     
 
     ///////////////////////////////////////////////
@@ -55,7 +60,7 @@ module.exports = function(express, app, passport, LocalStrategy){
     
     //// Once in the signup pages, the page will obtain the info, validate it, check for errors and show responses accordingly
     //// When the data is ready, will be saved in the User as well as in Student/Instructor models and it will go to the home page
-    //router.post('/new', function(req, res, next){
+    //router.post('/newsignup', function(req, res, next){
     //    // Get Form Values
     //    var first_name     	= req.body.first_name;
     //    var last_name     	= req.body.last_name;
@@ -197,6 +202,6 @@ module.exports = function(express, app, passport, LocalStrategy){
 
     // E: the second parameter is the Object !
     // http://stackoverflow.com/questions/18296184/error-creating-user-in-express-routes-file
-    app.use('/user', User);
+    app.use('/', router);
 
 }

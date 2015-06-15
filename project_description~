@@ -36,6 +36,9 @@ STRUCTURE:
 '/user/books': all information about my books, either lent or borrowed
 '/user/books/new': a book to register
 
+OBSERVATIONS:
+--- node helps to debug a bit...
+--- after a plan it is better! then: structure --> model --> route or view --> view or route --> app --> structure
 
 
 Some links to check:
