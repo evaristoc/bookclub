@@ -1,5 +1,5 @@
 module.exports = function(express, app){
-  var router = express.Router();
+  var indexrouter = express.Router();
   
   // Global Vars for index only
   app.use(function (req, res, next) {
@@ -11,13 +11,13 @@ module.exports = function(express, app){
   });
   
   /* GET home page. */
-  router.get('/', function(req, res, next) {
+  indexrouter.get('/', function(req, res, next) {
     res.render('index', { title: 'Welcome to BookClub !' });
   });
   
-  router.get('/about', function(req, res, next) {
+  indexrouter.get('/about', function(req, res, next) {
     res.render('about', { title: 'About BookClub' });
   });
    
-  app.use('/', router); 
+  app.use('/', indexrouter); 
 }

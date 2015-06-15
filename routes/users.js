@@ -1,5 +1,5 @@
 module.exports = function(express, app, passport, LocalStrategy, mongoose){
-    var router = express.Router();
+    var userrouter = express.Router();
     var User = require('../models/User.js');
 
     /* GET users listing. */
@@ -10,12 +10,16 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
     //  if (err) throw err;
     //  res.render('newsignup', { title: 'Signup Form' });
     //});
+ 
+    // userrouter.get("/", function(req, res, next) {
+    //    res.render("index", {title:"User Dashboard Route"})
+    //})
     
-    router.get('/user/signup', function(req, res, next) {
+    userrouter.get('/signup', function(req, res, next) {
       res.render('user/signup', { title: 'About BookClub' });
     });
 
-    router.post('/user/signup', function(req, res, next){
+    userrouter.post('/user/signup', function(req, res, next){
         // Get Form Values
         var name         	= req.body.name;
         var email    		= req.body.email;
@@ -123,11 +127,11 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
    ));
  
     // E: also from the other project, modified...
-    router.post('/login', passport.authenticate('local',{failureRedirect:'/', failureFlash:'Invalid username or password'}), function(req, res){
+    userrouter.post('/login', passport.authenticate('local',{failureRedirect:'/', failureFlash:'Invalid username or password'}), function(req, res){
         console.log('Authentication Successful');
         var id = req.user.id;
             req.flash('success', 'You are logged in');
-        res.redirect('/');
+        res.redirect('/user/books/index');
     });
 
     function ensureAuthenticated(req,res,next) {
@@ -138,20 +142,20 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
     }
 
     // USE THIS PART TO TAKE THE AUTHENTICATED USERS TO SEE A SESSION VIEW OF INFORMATION ABOUT THE SITE
-    router.get('/', ensureAuthenticated, function(req, res, next) {
+    userrouter.get('/', ensureAuthenticated, function(req, res, next) {
         // here is where the new created method of object Student is initialised !!
         User.getUserById(req.user.id, function(err,id){
           if (err) {
             console.log(err);
             res.send(err);
           } else {
-            res.render('/', {'users':user}); // the second parameter is session and its name!!
+            res.render('user/books/index'); // the second parameter is session and its name!!
           }
         });
       }
     );
 
-
+    ///////////////////////////////////////////////
 
 
     //
@@ -173,7 +177,7 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
     //})
     
 
-    ///////////////////////////////////////////////
+
     
     
     //// Once in the signup pages, the page will obtain the info, validate it, check for errors and show responses accordingly
@@ -320,6 +324,6 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
 
     // E: the second parameter is the Object !
     // http://stackoverflow.com/questions/18296184/error-creating-user-in-express-routes-file
-    app.use('/', router);
+    app.use('/', userrouter);
 
 }
