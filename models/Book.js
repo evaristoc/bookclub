@@ -7,7 +7,7 @@ var async = require('async');
 
 // User Schema
 var BookSchema = mongoose.Schema({
-	owner_id:String,
+	_owner:{type:mongoose.Schema.Types.ObjectId, ref:'User'},
 	title:String,
 	authors:[String],
 	edition:String,
@@ -15,7 +15,7 @@ var BookSchema = mongoose.Schema({
 	entered:{type:Date, default:Date.now},
 	status:{
 		current:String,
-		shared_with:String,
+		_shared:String,
         date:Date
         }
 });
@@ -27,29 +27,90 @@ var Book = module.exports = mongoose.model('Book', BookSchema);
 // method create (save): incomplete - it will be finished in the users.js
 //http://stackoverflow.com/questions/17712973/one-to-many-mapping-in-mongoose-how-to-receive-and-process
 //http://blog.mongodb.org/post/52299826008/the-mean-stack-mistakes-youre-probably-making
-module.exports.createBook = function(newBook, user_inst, user_class, callback) {
-	console.log('inside the createBook, level 1');
-	bid_inuser_save = function(book){
-		user_class.getUserById(user_inst._id, function(err, user){
-          console.log('user in async for new book creation ');
-		  console.log(book);
-		  err = NaN;
-          if (err) {
-            console.log(err);
-            res.send(err);
-          } else {
-			//while (newBook){
-				console.log(user.books);
-				user.books.push(book._id);
-				console.log(user.books);
-				user.save();
-			//};
-		  };
-		});
-	};																  
-	async.parallel([newBook.save, bid_inuser_save(newBook)],callback);
+//http://mongoosejs.com/docs/populate.html
+//try async.series([newBook.save(), user_func(newBook)], callback(err, results));
+//and do a console.log on the results in .createBook
+//that will give you an idea of how async.series calls your final callback 
+//module.exports.createBook = function(newBook, user_inst, user_class){
+//	user_func = function(book){
+//		user_class.getUserById(user_inst._id,function(err, user){
+//			user._mybooks.push(book.title);
+//			user.save();
+//		});
+//	};
+//	async.series([newBook.save(), user_func(newBook)], function(err){
+//		console.log("done with saving");
+//	});
+//};
+
+module.exports.createBook = function(newBook, user_inst, user_class){
+	async.series([
+		function(callback){
+			return newBook.save();
+			//newBook.save(function(err, result) {
+			//if (err) {
+			//	return callback(err);
+			//}
+			//console.log(result.length);
+			//return callback(null, result);
+			//});
+		},
+		function(book, callback) {
+			console.log(book.length);
+			user_class.getUserById(user_inst._id,function(err, user){
+				if (err) {
+					callback(err);
+				};
+				user._mybooks.push(book.title);
+				user.save(function(err, result) {
+					if (err) {
+						callback(err);
+					}
+					callback(null, result);
+				});
+			});
+		}],
+		function(err, results) {
+			if (err) {
+				return console.error('there was an error');
+			}
+			console.log('done with saving');
+		}
+	);
+}
+
+
+//module.exports.createBook = function(newBook, user_inst, user_class, callback){
+//	newBook.save(function(book){
+//		user_class.getUserById(user_inst._id,function(user){
+//			user._mybooks.push(book._id);
+//			user.save(callback);
+//		});
+//	});
+//};
+//module.exports.createBook = function(newBook, user_inst, user_class, callback) {
+//	console.log('inside the createBook, level 1');
+//	bid_inuser_save = function(book){
+//		user_class.getUserById(user_inst._id, function(err, user){
+//          console.log('user in async for new book creation ');
+//		  console.log(book);
+//		  err = NaN;
+//          if (err) {
+//            console.log(err);
+//            res.send(err);
+//          } else {
+//			//while (newBook){
+//				console.log(user.books);
+//				user.books.push(book._id);
+//				console.log(user.books);
+//				user.save();
+//			//};
+//		  };
+//		});
+//	};																  
+//	async.parallel([newBook.save, bid_inuser_save(newBook)],callback);
 //	async.parallel([newBook.save, console.log(newBook)],callback);
-};
+//};
 
 
 //module.exports.createBook = function(newBook, user_func, callback) {

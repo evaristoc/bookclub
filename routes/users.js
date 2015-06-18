@@ -212,7 +212,7 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
     );
 
 
-    userrouter.post('/user/books/new', function(req, res, next){
+    userrouter.post('/user/books/new', ensureAuthenticated, function(req, res, next){
         // Get Form Values
         console.log("inside post new book level 1");
         console.log('Owner of Book ',req.user._id);
@@ -225,16 +225,23 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
                 authors: authors,
                 edition:edition,
                 remarks:remarks,
-                owner_id:req.user._id,
+                _owner:req.user._id,
                 status:""
         });
         // this transaction could occur, but there is less than granted!! one of the issues with no-SQL
         //mongoose update array
         //http://tech-blog.maddyzone.com/node/add-update-delete-object-array-schema-mongoosemongodb
         //http://justinklemm.com/node-js-async-tutorial/
+        //http://stackoverflow.com/questions/17647112/how-do-you-update-one-to-many-relationships-in-node-js
+        //http://jaketrent.com/post/mongoose-population/
         //user.b_idsave = function(bid){req.user.updatebooks.push(bid); user.save;}
-        console.log('Owner Assigned to Book ',newBook.owner_id);
-        Book.createBook(newBook, req.user, User, console.log('callback'));
+        //console.log('Owner Assigned to Book ',newBook._owner);
+        //Book.createBook(newBook, req.user, User, function(err, req, res, next){
+        //  if (err) return next(err);
+        //  res.render('user/books/new', {'user':user});
+        //});
+        Book.createBook(newBook, req.user, User);
+        //Book.createBook(newBook, req.user, User, console.log('callback'));
         //Book.createBook(newBook, req.user, User, function(err, user, book){
         //    req.flash('success','book added');
         //    res.redirect('/user/profile');            

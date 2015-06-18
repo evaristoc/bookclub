@@ -15,7 +15,8 @@
 			bcrypt:true
 		},
 		registration_date:{type:Date, default: Date.now},
-		books: [String]
+		_mybooks: [String]
+		//_mybooks: [{type:mongoose.Schema.Types.ObjectId, ref:'Book'}]
 	});
 	// Training: Instantiation of User as a mongoose instance
 	var User = module.exports = mongoose.model('users', UserSchema);
