@@ -1,6 +1,7 @@
 module.exports = function(express, app, passport, LocalStrategy, mongoose){
     var userrouter = express.Router();
     var User = require('../models/User.js');
+    var Book = require('../models/Book.js');
 
     /* GET users listing. */
     // Anyone is a user BEFORE and even AFTER signing
@@ -15,7 +16,7 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
     //    res.render("index", {title:"User Dashboard Route"})
     //})
     
-    userrouter.get('/signup', function(req, res, next) {
+    userrouter.get('/user/signup', function(req, res, next) {
       res.render('user/signup', { title: 'About BookClub' });
     });
 
@@ -79,33 +80,20 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
     // Training: passport implementation
     // SEE http://passportjs.org/docs/configure
     // E: serialization is about creating a cookie assigned to a user to identify his/her session
-    passport.serializeUser(function(user, done) {
-      done(null, user._id);
-    });
     
-    passport.deserializeUser(function(id, done) {
-      User.getUserById(id, function(err, user) {
-        done(err, user);
-      });
-    });
-
-    //
-    //
-    // Here the login:
-    // --- start from login partials,
-    // --- verify the correct authentication (which include decrypting at the Model file)
-    // --- after requesting (and sending...) some data for messaging and redirection...
-    // --- ... redirect the person into the corresponding section
+    // HOW do I GET user in the session ???
+    // 1) the passport is initialised at app.js
+    // 2) here is the passport strategy then called; the strategy evaluate the data with the model (User) calling its methods
+    //    passport will take the values inside the local strategy for further use
+    //    so far only the compared values are not visible; no access to data is still performed
+    // 3) once the comparison is valid, passport will serialize the id or any relevant look-up attribute
+    // 4) after serialize, it will deserialize it again: it is here where the data is extracted !!!
+    // 5) now all the info about the record is accessible and rendered (--> done(err, user))
+    //    the record is available to the whole local script
     
-
-    //router.get('/login', function(req, res, next) {
-    //  res.render('login',{
-    //    'title': 'Login'
-    //  });
-    //});
- 
     passport.use(new LocalStrategy(
        function(username, password, done){
+              console.log('user in passport LocalStrategy 1 ');
                User.getUserByUsername(username, function(err, user){
                if(err) throw err;
                if(!user){
@@ -116,6 +104,7 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
                User.comparePassword(password, user.password, function(err, isMatch){
                    if(err) throw err;
                    if(isMatch){
+                       console.log('user in passport LocalStrategy 2 ');
                        return done(null, user);
                    } else {
                        console.log('Invalid Password');
@@ -125,13 +114,37 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
            });
        }
    ));
- 
-    // E: also from the other project, modified...
+
+    passport.serializeUser(function(user, done) {
+      console.log('user in passport.serializeUser ');
+      console.log(user);
+      done(null, user._id);
+    });
+    
+    passport.deserializeUser(function(id, done) {
+      console.log(id);
+      User.getUserById(id, function(err, user) {
+        console.log('user in passport.deserializeUser -> User.getUserById ');
+        console.log(user);
+        done(err, user);
+      });
+    });
+
+
+
+    //
+    // Here the login:
+    // --- start from login partials,
+    // --- verify the correct authentication (which include decrypting at the Model file)
+    // --- after requesting (and sending...) some data for messaging and redirection...
+    // --- ... redirect the person into the corresponding section
+    
     userrouter.post('/login', passport.authenticate('local',{failureRedirect:'/', failureFlash:'Invalid username or password'}), function(req, res){
         console.log('Authentication Successful');
-        var id = req.user.id;
-            req.flash('success', 'You are logged in');
-        res.redirect('/user/books/index');
+        console.log('user in post after login and authentication ');
+        var username = req.user.username;
+        req.flash('success', 'You are logged in');
+        res.redirect('/books/index');
     });
 
     function ensureAuthenticated(req,res,next) {
@@ -141,19 +154,135 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
       res.redirect('/')
     }
 
-    // USE THIS PART TO TAKE THE AUTHENTICATED USERS TO SEE A SESSION VIEW OF INFORMATION ABOUT THE SITE
-    userrouter.get('/', ensureAuthenticated, function(req, res, next) {
+
+    // THIS ROUTER IS FOR GOING INTO BOOKS INDEX AFTER LOGIN
+    // THE ROUTER REQUIRES AUTHENTICATION !!!
+    userrouter.get('/books/index', ensureAuthenticated, function(req, res, next) {
         // here is where the new created method of object Student is initialised !!
-        User.getUserById(req.user.id, function(err,id){
+        User.getUserById(req.user.id, function(err,user){
+          console.log('user in router to book ');
           if (err) {
             console.log(err);
             res.send(err);
           } else {
-            res.render('user/books/index'); // the second parameter is session and its name!!
+            console.log(user.username);
+            res.render('user/books/index', {'user':user.username}); // the second parameter is session and its name!!
           }
         });
       }
     );
+
+///////////////////////////////////////////////////////////////////////////////
+
+  
+    
+    //// THIS ROUTER IS FOR GOING INTO PROFILES TO SEE PROFILE
+    //// THE ROUTER REQUIRES AUTHENTICATION !!!
+    //userrouter.get('/user/profile', ensureAuthenticated, function(req, res, next) {
+    //    // here is where the new created method of object Student is initialised !!
+    //    User.getUserById(req.user.id, function(err,user){
+    //      console.log('user in router to profile ');
+    //      if (err) {
+    //        console.log(err);
+    //        res.send(err);
+    //      } else {
+    //        console.log(user.username);
+    //        res.render('user/profile', {'user':user}); // the second parameter is session and its name!!
+    //      }
+    //    });
+    //  }
+    //);
+
+
+    // THIS ROUTER IS FOR GOING INTO A NEW BOOK
+    // THE ROUTER REQUIRES AUTHENTICATION !!!
+    userrouter.get('/user/books/new', ensureAuthenticated, function(req, res, next) {
+        // here is where the new created method of object Student is initialised !!
+        User.getUserById(req.user.id, function(err,user){
+          console.log('user in router to book new ');
+          if (err) {
+            console.log(err);
+            res.send(err);
+          } else {
+            console.log(user.username);
+            res.render('user/books/new', {'user':user}); // the second parameter is session and its name!!
+          }
+        });
+      }
+    );
+
+
+    userrouter.post('/user/books/new', function(req, res, next){
+        // Get Form Values
+        console.log("inside post new book level 1");
+        console.log('Owner of Book ',req.user._id);
+        var title         	= req.body.title;
+        var authors    		= req.body.authors;
+        var edition 		= req.body.edition;
+        var remarks 		= req.body.remarks;
+        var newBook = new Book({
+                title: title,
+                authors: authors,
+                edition:edition,
+                remarks:remarks,
+                owner_id:req.user._id,
+                status:""
+        });
+        // this transaction could occur, but there is less than granted!! one of the issues with no-SQL
+        //mongoose update array
+        //http://tech-blog.maddyzone.com/node/add-update-delete-object-array-schema-mongoosemongodb
+        //http://justinklemm.com/node-js-async-tutorial/
+        //user.b_idsave = function(bid){req.user.updatebooks.push(bid); user.save;}
+        console.log('Owner Assigned to Book ',newBook.owner_id);
+        Book.createBook(newBook, req.user, User, console.log('callback'));
+        //Book.createBook(newBook, req.user, User, function(err, user, book){
+        //    req.flash('success','book added');
+        //    res.redirect('/user/profile');            
+        //});
+        //test_func = function(){console.log('TEST')};
+        ////Book.createBook(newBook, test_func(), function(err, book){
+        ////    // E: final message into the web server and redirecting to homepage
+        ////    if (err){
+        ////      res.send(err)
+        ////    }else{
+        ////      console.log(user, book);
+        ////      req.flash('success','book added');
+        ////      res.redirect('user/profile');
+        ////    };
+        ////});
+        //Book.createBook(newBook, test_func(), function(){
+        //    // E: final message into the web server and redirecting to homepage
+        //      //console.log(req.user, book);
+        //      //req.flash('success','book added');
+        //      res.redirect('/user/profile');
+        //});
+    });
+
+
+    // THIS ROUTER IS FOR GOING INTO PROFILES TO SEE PROFILE
+    // THE ROUTER REQUIRES AUTHENTICATION !!!
+    userrouter.get('/user/profile', ensureAuthenticated, function(req, res, next) {
+        // here is where the new created method of object Student is initialised !!
+        User.getUserById(req.user.id, function(err,user){
+          console.log('user in router to profile ');
+          if (err) {
+            console.log(err);
+            res.send(err);
+          } else {
+            console.log(user.username);
+            res.render('user/profile', {'user':user}); // the second parameter is session and its name!!
+          }
+        });
+      }
+    );
+
+
+    userrouter.get('/logout', function(req, res){
+        req.logout();
+            // Success Message
+        req.flash('success','You have logged out');
+        res.redirect('/');
+    });	
 
     ///////////////////////////////////////////////
 

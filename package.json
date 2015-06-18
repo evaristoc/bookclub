@@ -22,6 +22,7 @@
     "express-session":"*",
     "express-validator":"*",
     "connect-flash":"*",
-    "express-messages":"*"
+    "express-messages":"*",
+    "async":"*"
   }
 }

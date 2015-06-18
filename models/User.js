@@ -7,22 +7,15 @@
 	// E: setting the signup method in user model
 	// User Schema
 	var UserSchema = mongoose.Schema({
-		name: {
-			type: String
-		},
-		username: {
-			type: String
-		},
-		email:{
-			type: String
-		},
-		password: {
+		name:String,
+		username:String,
+		email:String,
+		password:{
 			type:String,
 			bcrypt:true
 		},
-		registration_date: {
-			type:Date	
-		}
+		registration_date:{type:Date, default: Date.now},
+		books: [String]
 	});
 	// Training: Instantiation of User as a mongoose instance
 	var User = module.exports = mongoose.model('users', UserSchema);

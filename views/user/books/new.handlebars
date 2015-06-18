@@ -1,0 +1,22 @@
+<h2>Add a New Book</h2>
+<form id="regForm" method="post" action="/user/books/new">
+	<div>
+		<label>Title: </label>
+		<input type="text" name="title" value="{{title}}">
+	</div>
+	<div>
+		<label>Authors: </label>
+		<input type="text" name="authors" value="{{authors}}">
+	</div>
+	<div>
+		<label>Year of Publication: </label>
+		<input type="text" name="edition" value="{{edition}}">
+	</div>
+	<div>
+		<label>Remarks: </label>
+		<input type="text" name="remarks" value="{{remarks}}">
+	</div>
+	<div>
+		<input type="submit" value="NewBook">
+	</div>
+</form>
