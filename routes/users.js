@@ -240,23 +240,24 @@ module.exports = function(express, app, passport, LocalStrategy, mongoose){
         //  if (err) return next(err);
         //  res.render('user/books/new', {'user':user});
         //});
-        Book.createBook(newBook, req.user, User);
+        //Book.createBook(newBook, req.user, User);
         //Book.createBook(newBook, req.user, User, console.log('callback'));
-        //Book.createBook(newBook, req.user, User, function(err, user, book){
-        //    req.flash('success','book added');
-        //    res.redirect('/user/profile');            
-        //});
+        Book.createBook(newBook, req.user, User, function(err){
+            if (err) {res.send(err)};
+            req.flash('success','book added');
+            res.redirect('/user/profile');            
+        });
         //test_func = function(){console.log('TEST')};
-        ////Book.createBook(newBook, test_func(), function(err, book){
-        ////    // E: final message into the web server and redirecting to homepage
-        ////    if (err){
-        ////      res.send(err)
-        ////    }else{
-        ////      console.log(user, book);
-        ////      req.flash('success','book added');
-        ////      res.redirect('user/profile');
-        ////    };
-        ////});
+        //Book.createBook(newBook, test_func(), function(err, book){
+        //    // E: final message into the web server and redirecting to homepage
+        //    if (err){
+        //      res.send(err)
+        //    }else{
+        //      console.log(user, book);
+        //      req.flash('success','book added');
+        //      res.redirect('user/profile');
+        //    };
+        //});
         //Book.createBook(newBook, test_func(), function(){
         //    // E: final message into the web server and redirecting to homepage
         //      //console.log(req.user, book);
